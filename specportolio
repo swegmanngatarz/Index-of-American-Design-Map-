@@ -45,7 +45,7 @@
 <div id="app">
 <div id="sidebar">
   <div id="sidebar-header">
-    <p>Speculative Portfolio</p>
+    <p>Interactive Oject Mapp>
     <h1>Index of American Design</h1>
   </div>
   <div id="filter-row">
@@ -69,8 +69,8 @@
     <g id="dots-g"></g>
   </svg>
   <div id="legend">
-    <div class="lr"><div class="ld" style="background:#378ADD"></div> Object's state</div>
-    <div class="lr"><div class="ld" style="background:#7F77DD"></div> Renderer's state</div>
+    <div class="lr"><div class="ld" style="background:#378ADD"></div> Object's origin state</div>
+    <div class="lr"><div class="ld" style="background:#7F77DD"></div> State Portfolio </div>
     <div class="lr"><div class="ll"></div> Renderer → Object</div>
   </div>
   <div id="panel">
@@ -94,7 +94,7 @@ const objects = [
   {
     id:1, name:"Lion and Ball Figurine",
     objectState:"VT", rendererState:"DC",
-    type:"Ceramic",
+    type:"Glazed ceramic",
     artist:"Ella Josephine Sterling",
     rendererLocation:"Washington, DC",
     date:"May 1936",
@@ -102,7 +102,8 @@ const objects = [
     owner:"Major Gist Blair",
     origin:"Bennington, VT",
     imageUrl:"https://images.collection.cooperhewitt.org/404086_a03b2f9f4f5f0c1b_b.jpg",
-    desc:"Glazed ceramic figurine, Bennington ware"
+    linkURL: "https://airtable.com/appM7Rpxsza2SXbWw/shrrjin6cVjeWzWKo/tblM1XwFyHim0N7c3/viwv8CGuSX0KozEy8/recT3O0Ri5PdQ3de3?blocks=bipVIcxHdthToo3UB",
+    desc:"The drawing depicts a lion standing with its right front paw placed on a spherical object that appears to be a ball. The lion's mane is rendered with a detailed texture using a combination of brown, white, and dark sepia tones, creating a dense, curly appearance. The face of the lion is light brown with shading around the eyes, nose, and mouth, showing an open mouth with visible teeth and a curled upper lip. The body of the lion features a combination of earth tones such as tan, green, and brown, with some faint dappling and striping evident along its back and legs. The paws are also highlighted with a similar earthy palette, and the rear legs display blotches of green, blue, and brown hues. The tail loops up along the back, with a lighter coloration, mainly tan with hints of yellow and brown. The ball beneath the right front paw is round and shaded with green, yellow, and brown, giving it a mottled appearance. The background is a plain, untextured off-white, with some faint writing and measurement marks around the edges."
   },
   {
     id:2, name:"Shaker Chair",
