@@ -112,7 +112,7 @@ body{font-family:Georgia,serif;background:#f0f4f8;}
       <div class="lr"><div class="ld" style="background:#2e7bbf"></div> Object's origin state</div>
       <div class="lr"><div class="ld" style="background:#8ab0d8"></div> Renderer's state</div>
       <div class="lr"><div class="ld" style="background:#c8d8e8"></div> Not in Index - click to suggest</div>
-      <div class="lr"><div class="ll"></div> Renderer to Object</div>
+      <div class="lr"><div class="ll"></div> Object to State Index and Renderer</div>
     </div>
     <div id="panel">
       <button id="close-btn" onclick="closePanel()">x</button>
@@ -129,13 +129,13 @@ body{font-family:Georgia,serif;background:#f0f4f8;}
     <div id="suggest-panel">
       <button onclick="closeSuggest()" style="position:absolute;top:10px;right:14px;background:none;border:none;font-size:20px;cursor:pointer;color:#7a8fa0;">x</button>
       <div id="suggest-title"></div>
-      <div id="suggest-sub">This state was not represented in the original Index of American Design. What object from here should be included in a new index?</div>
-      <textarea id="suggest-input" placeholder="e.g. A Navajo loom from the 1880s, held by..."></textarea>
+      <div id="suggest-sub">This state was not represented in the original Index of American Design. What object do you think represents your state and should be included in a new index?</div>
+      <textarea id="suggest-input" placeholder="Ex: A Navajo tapestry from the 1880s, held by..."></textarea>
       <div id="suggest-btns">
         <button class="sbtn" id="submit-btn" onclick="submitSuggest()">Submit suggestion</button>
         <button class="sbtn" id="cancel-btn" onclick="closeSuggest()">Cancel</button>
       </div>
-      <div id="suggest-thanks">Thank you - your suggestion has been noted.</div>
+      <div id="suggest-thanks">Thank you - your suggestion has been recorded!</div>
     </div>
   </div>
 </div>
@@ -257,7 +257,7 @@ function showPanel(obj) {
     `<b>Owner:</b> ${obj.owner}<br>` +
     `<b>Description:</b> ${obj.desc}`;
   document.getElementById('panel-conn').textContent = obj.objectState !== obj.rendererState
-    ? `Renderer traveled from ${obj.rendererState} to ${obj.objectState} to document this object`
+    ? `The object traveled to ${obj.rendererState} from ${obj.objectState}. It is part of the ${obj.rendererState} Index`
     : `Renderer was local to the object's origin`;
   const wrap = document.getElementById('panel-img-wrap');
   if (obj.imageUrl) {
