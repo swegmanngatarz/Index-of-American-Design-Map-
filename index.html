@@ -83,7 +83,7 @@ body{font-family:Georgia,serif;background:#f0f4f8;}
 <div id="app">
   <div id="sidebar">
     <div id="sidebar-header">
-      <p>Speculative Portfolio</p>
+      <p>Interactive Object Index Map</p>
       <h1>Index of American Design</h1>
     </div>
     <div id="filter-row">
@@ -111,7 +111,7 @@ body{font-family:Georgia,serif;background:#f0f4f8;}
     </svg>
     <div id="legend">
       <div class="lr"><div class="ld" style="background:#2e7bbf"></div> Object's origin state</div>
-      <div class="lr"><div class="ld" style="background:#8ab0d8"></div> Renderer's state</div>
+      <div class="lr"><div class="ld" style="background:#8ab0d8"></div> State Index</div>
       <div class="lr"><div class="ld" style="background:#c8d8e8"></div> Not in Index - click to suggest</div>
       <div class="lr"><div class="ll"></div> Object to State Index and Renderer</div>
     </div>
@@ -147,7 +147,7 @@ body{font-family:Georgia,serif;background:#f0f4f8;}
 const objects = [
   {id:1,name:"Lion and Ball Figurine",objectState:"VT",rendererState:"DC",type:"Ceramic",artist:"Ella Josephine Sterling",rendererLocation:"Washington, DC",date:"May 1936",maker:"Anonymous Craftsman (Bennington Pottery)",owner:"Major Gist Blair",origin:"Bennington, VT",imageUrl:"https://api.nga.gov/iiif/39c6b8bf-3f2d-4bfb-b3af-0cf565878421/full/!800,800/0/default.jpg",linkUrl:"https://airtable.com/appM7Rpxsza2SXbWw/shrrjin6cVjeWzWKo/tblM1XwFyHim0N7c3/viwv8CGuSX0KozEy8/recT3O0Ri5PdQ3de3?blocks=bipVIcxHdthToo3UB",desc:"Glazed ceramic figurine of a lion with paw resting on a ball. Bennington ware, rendered in earth tones of tan, green, and brown."},
   {id:2,name:"Blouse",objectState:"TX",rendererState:"DC",type:"Textile",artist:"Inez Montgomery",rendererLocation:"Washington, DC",date:"1943",maker:"Unknown Craftsman",owner:"Pauline A. Pinckney",origin:"Argyle, Denton County, Texas",imageUrl:"https://v5.airtableusercontent.com/v3/u/52/52/1776319200000/Mgr0kF2XaaLRX81PMhLMXQ/wTcLauCmQOaVWxy6ycAmBNGkug89lBZwTTGZuniDcFxKs9po442ZnynnuYDOgHfXCXLAaxoxu2xtMZwveIUzv8N-r_V6wWHoafX1BC1xVXy0NIIkqx3ePomOl9gOcT2JVYK1w_5ohEVbgBggOpIEDg/h2WagkZH-UeMJQ3azsWtd4eMgrimxWnKhDo4PYZN_jU",linkUrl:"https://airtable.com/appM7Rpxsza2SXbWw/shrrjin6cVjeWzWKo/tblM1XwFyHim0N7c3/viwv8CGuSX0KozEy8/recQ39UxbAHZ6e79v?blocks=hide",desc:"Textile garment, c. 1830. Documented in Argyle, Denton County, Texas."},
-  {id:3,name:"Clermont on Hudson Painting",objectState:"PA",rendererState:"DC",type:"Painting",artist:"Ella Josephine Sterling",rendererLocation:"Washington, DC",date:"1935-1942",maker:"Robert Fulton (1765-1815)",owner:"Private Collection",origin:"Philadelphia, PA",imageUrl:"https://api.nga.gov/iiif/7ba23fcf-0b5c-4f13-9e25-0d8084a232a1/full/!200,200/0/default.jpg",linkUrl:"",desc:"Watercolor depiction of a painting on the back-panel of a chair, attributed to Robert Fulton."},
+  {id:3,name:" "Clermont on Hudson Painting"",objectState:"PA",rendererState:"DC",type:"Painting",artist:"Ella Josephine Sterling",rendererLocation:"Washington, DC",date:"1935-1942",maker:"Robert Fulton (1765-1815)",owner:"Private Collection",origin:"Philadelphia, PA",imageUrl:"https://api.nga.gov/iiif/7ba23fcf-0b5c-4f13-9e25-0d8084a232a1/full/!200,200/0/default.jpg",linkUrl:"",desc:"Watercolor depiction of a painting on the back-panel of a chair, attributed to Robert Fulton."},
   {id:4,name:"Bread Plate",objectState:"DC",rendererState:"DC",type:"Ceramic",artist:"Margaret A.R. Stottlemeyer",rendererLocation:"Washington, DC",date:"1935",maker:"Unknown",owner:"Unknown",origin:"Washington, DC",imageUrl:"https://api.nga.gov/iiif/44c43e2c-489e-498e-969c-eb3c2a6c8117/full/!800,800/0/default.jpg",linkUrl:"",desc:"Watercolor rendering of a ceramic bread plate."},
   {id:5,name:"Mahogany Stand with Two Drawers",objectState:"IL",rendererState:"DC",type:"Furniture",artist:"Margaret A.R. Stottlemeyer",rendererLocation:"Washington, DC",date:"1935-1942",maker:"Samuel C. Brockman",owner:"Georgia E. Brockman",origin:"Illinois",imageUrl:"https://api.nga.gov/iiif/5273ba83-f2fe-4026-affd-9c5a7e9861d9/full/!200,200/0/default.jpg",linkUrl:"",desc:"A mahogany stand with two drawers, documented as part of the Illinois office holdings."},
   {id:6,name:"Mision San Luis Rey de Francia",objectState:"CA",rendererState:"CA",type:"Painting",artist:"James Jones",rendererLocation:"Southern California",date:"1935-1942",maker:"Spanish Colonial Mission Builders",owner:"Gift of Mrs. Holger Cahill",origin:"San Luis Rey, CA",imageUrl:"https://api.nga.gov/iiif/16dd67b8-72bd-4b23-8cfc-f8fa0d9264e1/full/!800,800/0/default.jpg",linkUrl:"",desc:"Lithograph on wove paper. One of many Spanish Mission documents from the Index's Southern California office. 32.1 x 24.8 cm."},
@@ -196,7 +196,7 @@ function renderList() {
       <div class="oname">${o.name}</div>
       <div class="osub">${o.origin} - ${o.date}</div>
       <span class="tag t-type">${o.type}</span>
-      <span class="tag t-rend">rendered in ${o.rendererState}</span>
+      <span class="tag t-rend">part of ${o.rendererState} Index</span>
     </div>`
   ).join('');
 }
