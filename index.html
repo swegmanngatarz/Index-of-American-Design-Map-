@@ -64,6 +64,9 @@ body{font-family:Georgia,serif;background:#f5f2eb;}
 #state-label.show{opacity:1;}
 </style>
 </head>
+<div id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img">
+</div>
 <body>
 <div id="app">
 <div id="sidebar">
@@ -258,6 +261,30 @@ const stateCentroids = {
   VT:{x:810,y:175},VA:{x:730,y:320},WA:{x:155,y:175},WV:{x:700,y:315},
   WI:{x:560,y:235},WY:{x:285,y:250},DC:{x:778,y:298}
 };
+#lightbox{
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,0.85);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.2s;
+  z-index:999;
+}
+
+#lightbox.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+#lightbox img{
+  max-width:85%;
+  max-height:85%;
+  border-radius:4px;
+}
 
 // The 34 states + DC that had IAD offices
 const representedStates = new Set([
@@ -369,6 +396,14 @@ function showPanel(obj) {
   } else {
     wrap.innerHTML = `<div id="panel-img-placeholder">No image available</div>`;
   }
+
+  wrap.innerHTML = `
+  <img src="${obj.imageUrl}" 
+       alt="${obj.name}" 
+       style="cursor:zoom-in"
+       onclick="openLightbox('${obj.imageUrl}')"
+       onerror="this.parentNode.innerHTML='<div id=panel-img-placeholder>No image available</div>'">
+`;
   const link = document.getElementById('panel-link');
   if (obj.linkUrl) {
     link.href = obj.linkUrl;
@@ -408,6 +443,28 @@ function submitSuggest() {
   document.getElementById('suggest-btns').style.display = 'none';
   document.getElementById('suggest-thanks').style.display = 'block';
   setTimeout(closeSuggest, 2200);
+}
+
+function updateMapColors() {
+  const fo = filteredObjects();
+  const objStates = new Set(fo.map(o => o.objectState));
+
+  document.querySelectorAll('.sp').forEach(p => {
+    p.classList.remove('has-obj','sel-obj');
+
+    const sid = p.getAttribute('data-state');
+
+    if (selectedId) {
+      const obj = objects.find(o => o.id === selectedId);
+      if (sid === obj.objectState) {
+        p.classList.add('sel-obj');
+      }
+    } else {
+      if (objStates.has(sid)) {
+        p.classList.add('has-obj');
+      }
+    }
+  });
 }
 
 const fips = {
@@ -554,12 +611,10 @@ body { font-family: var(--font-sans); }
       <g id="dots-layer"></g>
     </svg>
     <div id="legend">
-      <div class="legend-row"><div class="legend-dot" style="background:#5DCAA5"></div> Has objects</div>
-      <div class="legend-row"><div class="legend-dot" style="background:#1D9E75"></div> Selected state</div>
-      <div class="legend-row"><div class="legend-dot" style="background:#7F77DD"></div> Object origin</div>
-      <div class="legend-row"><div class="legend-dot" style="background:#AFA9EC"></div> Renderer's origin</div>
-      <div class="legend-row"><div class="legend-line"></div> Renderer → Object</div>
-    </div>
+  <div class="lr"><div class="ld" style="background:#8b7355"></div> Has objects</div>
+  <div class="lr"><div class="ld" style="background:#2a2420"></div> Selected state</div>
+  <div class="lr"><div class="ll"></div> Renderer → Object</div>
+</div>
     <div id="info-panel">
       <div id="info-title"></div>
       <div id="info-sub"></div>
@@ -1018,8 +1073,12 @@ function drawConnection(obj) {
   });
 }
 
+wrap.innerHTML = `<img src="${obj.imageUrl}" alt="${obj.name}" ...>`;
 function showPanel(obj) {
-  document.getElementById('panel-title').textContent = obj.name;
+  document.getElementById('panel-fields').innerHTML =
+  `<b>Object origin:</b> ${obj.origin}<br>` +
+  `<b>Renderer's origin:</b> ${obj.rendererLocation}<br>` +
+  `<b>Object type:</b> ${obj.type}`;
   document.getElementById('panel-fields').innerHTML = `
     <b>Artist/Renderer:</b> ${obj.artist} (${obj.rendererLocation})<br>
     <b>Date:</b> ${obj.date}<br>
@@ -1077,6 +1136,16 @@ async function buildMap() {
   } catch(e) {
     g.innerHTML = '<text x="50%" y="50%" text-anchor="middle" fill="var(--color-text-secondary)" font-size="13">Map loading failed</text>';
   }
+function openLightbox(src){
+  const lb = document.getElementById('lightbox');
+  const img = document.getElementById('lightbox-img');
+  img.src = src;
+  lb.classList.add('show');
+}
+
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('show');
+}
 }
 
 buildMap();
