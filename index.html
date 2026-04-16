@@ -5,9 +5,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Index of American Design — Speculative Portfolio</title>
-<p>Interactive Object Index Map (Prototype)</p>
-  <p> Created by Sophia Wegmann-Gatarz
+<title>Interactive Object Index Map — Index of American Design</title>
+<p>Speculative Portfolio)</p>
+  <p> Sophia Wegmann-Gatarz
   2026</p>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -260,7 +260,7 @@ function showPanel(obj) {
     `<b>Description:</b> ${obj.desc}`;
   document.getElementById('panel-conn').textContent = obj.objectState !== obj.rendererState
     ? `The object traveled to ${obj.rendererState} from ${obj.objectState}. It is part of the ${obj.rendererState} Index`
-    : `Renderer was local to the object's origin`;
+    : `This watercolor was part of the Southern California Index.`;
   const wrap = document.getElementById('panel-img-wrap');
   if (obj.imageUrl) {
     wrap.innerHTML = `<img src="${obj.imageUrl}" alt="${obj.name}" onclick="openLightbox(this.src,'${obj.name.replace(/'/g,"")}')" onerror="this.parentNode.innerHTML='<div class=img-placeholder>No image</div>'">`;
