@@ -1,3 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Index of American Design — Speculative Portfolio</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,serif;background:#f5f2eb;}
+#app{display:flex;height:100vh;background:#f5f2eb;}
+#sidebar{width:300px;flex-shrink:0;border-right:1px solid #d6cfc0;display:flex;flex-direction:column;background:#faf8f4;}
+#sidebar-header{padding:16px;border-bottom:1px solid #d6cfc0;}
+#sidebar-header p{font-size:10px;font-weight:600;color:#888;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;}
+#sidebar-header h1{font-size:17px;font-weight:400;color:#2a2420;font-family:Georgia,serif;}
+#filter-row{padding:10px 14px;border-bottom:1px solid #d6cfc0;display:flex;gap:5px;flex-wrap:wrap;}
+.fb{font-size:10px;padding:3px 9px;border-radius:20px;border:1px solid #c8c2b4;background:transparent;color:#666;cursor:pointer;font-family:Georgia,serif;}
+.fb.on{background:#2a2420;color:#f5f2eb;border-color:#2a2420;}
+#obj-list{flex:1;overflow-y:auto;}
+.oi{padding:11px 14px;border-bottom:1px solid #ece8e0;cursor:pointer;transition:background 0.1s;}
+.oi:hover,.oi.sel{background:#ece8e0;}
+.oname{font-size:13px;font-weight:400;color:#2a2420;margin-bottom:2px;font-family:Georgia,serif;}
+.osub{font-size:10px;color:#888;}
+.tag{display:inline-block;font-size:9px;padding:2px 6px;border-radius:10px;margin-top:4px;margin-right:3px;font-family:Georgia,serif;}
+.t-type{background:#e8e0d0;color:#4a3f30;}
+.t-rend{background:#e8e4f0;color:#3c3460;}
+#map-area{flex:1;position:relative;overflow:hidden;background:#eae5db;}
+#map-svg{width:100%;height:100%;}
+.sp{fill:#d6cfc0;stroke:#fff;stroke-width:0.8;cursor:pointer;transition:fill 0.15s;}
+.sp:hover{fill:#bfb8a8;}
+.sp.has-obj{fill:#8b7355;}
+.sp.has-rend{fill:#b5aed0;}
+.sp.sel-obj{fill:#2a2420;}
+.sp.sel-rend{fill:#534AB7;}
+.conn{stroke:#534AB7;stroke-width:1.5;stroke-dasharray:5 3;fill:none;opacity:0.7;}
+#panel{position:absolute;bottom:0;left:0;right:0;background:#faf8f4;border-top:1px solid #d6cfc0;padding:14px 16px;transform:translateY(100%);transition:transform 0.22s;max-height:55%;}
+#panel.show{transform:translateY(0);}
+#panel-inner{display:flex;gap:14px;align-items:flex-start;}
+#panel-img-wrap{flex-shrink:0;}
+#panel-img-wrap img{width:80px;height:80px;object-fit:cover;border-radius:3px;border:1px solid #d6cfc0;display:block;}
+#panel-img-placeholder{width:80px;height:80px;background:#ece8e0;border-radius:3px;border:1px solid #d6cfc0;display:flex;align-items:center;justify-content:center;font-size:10px;color:#888;text-align:center;padding:6px;}
+#panel-body{flex:1;min-width:0;}
+#panel-title{font-size:15px;font-weight:400;color:#2a2420;margin-bottom:6px;font-family:Georgia,serif;}
+#panel-fields{font-size:11px;color:#555;line-height:1.9;}
+#panel-fields b{color:#2a2420;font-weight:600;}
+#panel-conn{font-size:11px;color:#534AB7;margin-top:7px;font-style:italic;}
+#panel-link{display:inline-block;margin-top:8px;font-size:10px;color:#8b7355;text-decoration:none;border-bottom:1px solid #c8b898;padding-bottom:1px;}
+#close-btn{position:absolute;top:10px;right:14px;background:none;border:none;font-size:18px;cursor:pointer;color:#888;line-height:1;}
+#suggest-panel{position:absolute;bottom:0;left:0;right:0;background:#faf8f4;border-top:1px solid #d6cfc0;padding:16px;transform:translateY(100%);transition:transform 0.22s;}
+#suggest-panel.show{transform:translateY(0);}
+#suggest-title{font-size:13px;font-weight:400;color:#2a2420;margin-bottom:4px;font-family:Georgia,serif;}
+#suggest-sub{font-size:11px;color:#888;margin-bottom:10px;}
+#suggest-input{width:100%;padding:8px 10px;border:1px solid #d6cfc0;border-radius:3px;font-size:12px;font-family:Georgia,serif;background:#fff;color:#2a2420;resize:none;height:60px;}
+#suggest-btns{display:flex;gap:8px;margin-top:8px;}
+.sbtn{padding:5px 14px;font-size:11px;font-family:Georgia,serif;border-radius:3px;cursor:pointer;}
+#submit-btn{background:#2a2420;color:#f5f2eb;border:none;}
+#cancel-btn{background:transparent;border:1px solid #d6cfc0;color:#666;}
+#suggest-thanks{display:none;font-size:12px;color:#4a7a4a;font-style:italic;margin-top:8px;}
+#legend{position:absolute;top:12px;right:12px;background:#faf8f4;border:1px solid #d6cfc0;border-radius:3px;padding:10px 12px;font-size:10px;color:#666;font-family:Georgia,serif;}
+.lr{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.lr:last-child{margin-bottom:0;}
+.ld{width:10px;height:10px;border-radius:50%;}
+.ll{width:20px;border-top:2px dashed #534AB7;}
+#state-label{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:#faf8f4;border:1px solid #d6cfc0;border-radius:3px;padding:5px 12px;font-size:11px;color:#888;font-family:Georgia,serif;pointer-events:none;opacity:0;transition:opacity 0.15s;}
+#state-label.show{opacity:1;}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="sidebar">
+  <div id="sidebar-header">
+    <p>Speculative Portfolio</p>
+    <h1>Index of American Design</h1>
+  </div>
+  <div id="filter-row">
+    <button class="fb on" onclick="setFilter('all',this)">All</button>
+    <button class="fb" onclick="setFilter('Ceramic',this)">Ceramic</button>
+    <button class="fb" onclick="setFilter('Textile',this)">Textile</button>
+    <button class="fb" onclick="setFilter('Furniture',this)">Furniture</button>
+    <button class="fb" onclick="setFilter('Painting',this)">Painting</button>
+    <button class="fb" onclick="setFilter('Tool',this)">Tool</button>
+  </div>
+  <div id="obj-list"></div>
+</div>
+<div id="map-area">
+  <div id="state-label"></div>
+  <svg id="map-svg" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+        <path d="M0,0 L0,6 L6,3 z" fill="#534AB7" opacity="0.8"/>
+      </marker>
+    </defs>
+    <g id="states-g"></g>
+    <g id="conn-g"></g>
+    <g id="dots-g"></g>
+  </svg>
+  <div id="legend">
+    <div class="lr"><div class="ld" style="background:#8b7355"></div> Object's origin state</div>
+    <div class="lr"><div class="ld" style="background:#b5aed0"></div> Renderer's state</div>
+    <div class="lr"><div class="ld" style="background:#d6cfc0"></div> Not represented — click to suggest</div>
+    <div class="lr"><div class="ll"></div> Renderer → Object</div>
+  </div>
+  <div id="panel">
+    <button id="close-btn" onclick="closePanel()">×</button>
+    <div id="panel-inner">
+      <div id="panel-img-wrap"></div>
+      <div id="panel-body">
+        <div id="panel-title"></div>
+        <div id="panel-fields"></div>
+        <div id="panel-conn"></div>
+        <a id="panel-link" href="#" target="_blank" style="display:none;">View in Airtable →</a>
+      </div>
+    </div>
+  </div>
+  <div id="suggest-panel">
+    <button id="close-btn" onclick="closeSuggest()" style="position:absolute;top:10px;right:14px;background:none;border:none;font-size:18px;cursor:pointer;color:#888;">×</button>
+    <div id="suggest-title"></div>
+    <div id="suggest-sub">This state was not represented in the original Index of American Design. What object from here should be included?</div>
+    <textarea id="suggest-input" placeholder="e.g. A Navajo loom from the 1880s, owned by..."></textarea>
+    <div id="suggest-btns">
+      <button class="sbtn" id="submit-btn" onclick="submitSuggest()">Submit suggestion</button>
+      <button class="sbtn" id="cancel-btn" onclick="closeSuggest()">Cancel</button>
+    </div>
+    <div id="suggest-thanks">Thank you — your suggestion has been noted.</div>
+  </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<script>
+const objects = [
+  {
+    id:1,
+    name:"Lion and Ball Figurine",
+    objectState:"VT",
+    rendererState:"DC",
+    type:"Ceramic",
+    artist:"Ella Josephine Sterling",
+    rendererLocation:"Washington, DC",
+    date:"May 1936",
+    maker:"Anonymous Craftsman (Bennington Pottery)",
+    owner:"Major Gist Blair",
+    origin:"Bennington, VT",
+    imageUrl:"https://images.collection.cooperhewitt.org/404086_a03b2f9f4f5f0c1b_b.jpg",
+    linkUrl:"https://airtable.com/appM7Rpxsza2SXbWw/shrrjin6cVjeWzWKo/tblM1XwFyHim0N7c3/viwv8CGuSX0KozEy8/recT3O0Ri5PdQ3de3?blocks=bipVIcxHdthToo3UB",
+    desc:"Glazed ceramic figurine of a lion with paw resting on a ball. Bennington ware, rendered in earth tones of tan, green, and brown."
+  },
+  {
+    id:2,
+    name:"Blouse",
+    objectState:"TX",
+    rendererState:"DC",
+    type:"Textile",
+    artist:"Inez Montgomery",
+    rendererLocation:"Washington, DC",
+    date:"1943",
+    maker:"Unknown Craftsman",
+    owner:"Pauline A. Pinckney",
+    origin:"Argyle, Denton County, Texas",
+    imageUrl:"https://v5.airtableusercontent.com/v3/u/52/52/1776312000000/l5nGhBHCMsy1sGCIAQVnUQ/umCer0mLUxO-lkOzsp2ayP6DMQ_FaWPRTynwfkGSdH1jD1E4R-lpsSu5d0mJ-uGIHScg9kl9X4BZcDQh10e-z5QBbVolhBHAP35_TI7G-d15I-Gl2iZkAq3gwKM4CnVH6PPRPIHJ2FWi0SjIR6biEg/5gVWFLlqyV838JZ9I1AbiYieysabySelhaH0obl6cTo",
+    linkUrl:"",
+    desc:"Textile garment documented in Texas, c. 1830."
+  },
+  {
+    id:3,
+    name:"'Clermont on Hudson' Painting",
+    objectState:"PA",
+    rendererState:"DC",
+    type:"Painting",
+    artist:"Ella Josephine Sterling",
+    rendererLocation:"Washington, DC",
+    date:"1935–1942",
+    maker:"Robert Fulton (1765–1815)",
+    owner:"Private Collection",
+    origin:"Philadelphia, PA",
+    imageUrl:"https://api.nga.gov/iiif/7ba23fcf-0b5c-4f13-9e25-0d8084a232a1/full/!200,200/0/default.jpg",
+    linkUrl:"",
+    desc:"Watercolor depiction of a painting on the back-panel of a chair, attributed to Robert Fulton."
+  },
+  {
+    id:4,
+    name:"Bread Plate",
+    objectState:"DC",
+    rendererState:"DC",
+    type:"Ceramic",
+    artist:"Margaret A.R. Stottlemeyer",
+    rendererLocation:"Washington, DC",
+    date:"1935",
+    maker:"Unknown",
+    owner:"Unknown",
+    origin:"Washington, DC",
+    imageUrl:"https://v5.airtableusercontent.com/v3/u/52/52/1776312000000/VsVQs3fDJXyoR6oK07ecPg/4nH_hBupu9BznHCRk6_KITBRZjgkftUvqbVt-X0pKHGdsZ-d8jjdGd8CVf3gP-ss0Om-y_JIXK6ctsLZQdv5ILXpdTvV9gNmSEH2U9QCnLjNpBVX4dRktOt5YPCJPUShMewmndwaa83SD0xWJk0YJA/v3bJ_ZaQiBgDr-JiG49-IkS6A2yp83H8BhJiPBjWu9o",
+    linkUrl:"",
+    desc:"Watercolor rendering of a ceramic bread plate."
+  },
+  {
+    id:5,
+    name:"Mahogany Stand with Two Drawers",
+    objectState:"IL",
+    rendererState:"DC",
+    type:"Furniture",
+    artist:"Margaret A.R. Stottlemeyer",
+    rendererLocation:"Washington, DC",
+    date:"1935–1942",
+    maker:"Samuel C. Brockman",
+    owner:"Georgia E. Brockman",
+    origin:"Illinois",
+    imageUrl:"https://api.nga.gov/iiif/5273ba83-f2fe-4026-affd-9c5a7e9861d9/full/!200,200/0/default.jpg",
+    linkUrl:"",
+    desc:"A mahogany stand with two drawers, documented as part of the Illinois office holdings."
+  },
+  {
+    id:6,
+    name:"Mision San Luis Rey de Francia",
+    objectState:"CA",
+    rendererState:"CA",
+    type:"Painting",
+    artist:"James Jones",
+    rendererLocation:"Southern California",
+    date:"1935–1942",
+    maker:"Spanish Colonial Mission Builders",
+    owner:"Gift of Mrs. Holger Cahill",
+    origin:"San Luis Rey, CA",
+    imageUrl:"https://api.nga.gov/iiif/16dd67b8-72bd-4b23-8cfc-f8fa0d9264e1/full/!800,800/0/default.jpg",
+    linkUrl:"",
+    desc:"Lithograph on wove paper. One of many Spanish Mission documents from the Index's Southern California office, 32.1 x 24.8 cm."
+  },
+  {
+    id:7,
+    name:"Pa. German Painted Chest",
+    objectState:"PA",
+    rendererState:"PA",
+    type:"Furniture",
+    artist:"Frances Lichten",
+    rendererLocation:"Pennsylvania",
+    date:"c. 1938",
+    maker:"Unknown Pennsylvania German Craftsman",
+    owner:"Unknown",
+    origin:"Pennsylvania",
+    imageUrl:"https://api.nga.gov/iiif/c34a2c1e-c5da-4664-bb2a-e5cc3467b9d8/full/!800,800/0/default.jpg",
+    linkUrl:"",
+    desc:"Watercolor and graphite on paper depicting a Pennsylvania German painted chest with traditional folk decoration."
+  },
+];
+
+const stateCentroids = {
+  AL:{x:595,y:430},AK:{x:115,y:520},AZ:{x:195,y:380},AR:{x:540,y:400},
+  CA:{x:110,y:330},CO:{x:290,y:320},CT:{x:820,y:205},DE:{x:795,y:260},
+  FL:{x:660,y:490},GA:{x:635,y:430},HI:{x:280,y:535},ID:{x:195,y:215},
+  IL:{x:560,y:310},IN:{x:590,y:310},IA:{x:530,y:270},KS:{x:450,y:340},
+  KY:{x:620,y:360},LA:{x:545,y:460},ME:{x:855,y:150},MD:{x:780,y:285},
+  MA:{x:830,y:195},MI:{x:610,y:240},MN:{x:510,y:195},MS:{x:570,y:430},
+  MO:{x:535,y:350},MT:{x:250,y:185},NE:{x:440,y:290},NV:{x:160,y:295},
+  NH:{x:825,y:175},NJ:{x:805,y:255},NM:{x:290,y:405},NY:{x:780,y:210},
+  NC:{x:710,y:370},ND:{x:430,y:185},OH:{x:650,y:295},OK:{x:460,y:385},
+  OR:{x:140,y:230},PA:{x:745,y:255},RI:{x:838,y:210},SC:{x:700,y:400},
+  SD:{x:430,y:235},TN:{x:610,y:385},TX:{x:445,y:450},UT:{x:220,y:320},
+  VT:{x:810,y:175},VA:{x:730,y:320},WA:{x:155,y:175},WV:{x:700,y:315},
+  WI:{x:560,y:235},WY:{x:285,y:250},DC:{x:778,y:298}
+};
+
+// The 34 states + DC that had IAD offices
+const representedStates = new Set([
+  "AL","AZ","CA","CO","CT","DC","FL","GA","IL","IN","IA","KY","LA",
+  "ME","MA","MI","MN","MO","NE","NJ","NM","NY","NC","OH","OR","PA",
+  "RI","SC","TN","TX","UT","VT","VA","WA","WI"
+]);
+
+let activeFilter = 'all';
+let selectedId = null;
+
+function setFilter(f, btn) {
+  activeFilter = f;
+  document.querySelectorAll('.fb').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  selectedId = null;
+  closePanel();
+  closeSuggest();
+  renderList();
+  updateMapColors();
+}
+
+function filteredObjects() {
+  return activeFilter === 'all' ? objects : objects.filter(o => o.type === activeFilter);
+}
+
+function renderList() {
+  const list = document.getElementById('obj-list');
+  const fo = filteredObjects();
+  list.innerHTML = fo.map(o => `
+    <div class="oi ${selectedId===o.id?'sel':''}" onclick="selectObj(${o.id})">
+      <div class="oname">${o.name}</div>
+      <div class="osub">${o.origin} · ${o.date}</div>
+      <span class="tag t-type">${o.type}</span>
+      <span class="tag t-rend">rendered in ${o.rendererState}</span>
+    </div>
+  `).join('');
+}
+
+function updateMapColors() {
+  const fo = filteredObjects();
+  const objStates = new Set(fo.map(o => o.objectState));
+  const rendStates = new Set(fo.map(o => o.rendererState));
+  document.querySelectorAll('.sp').forEach(p => {
+    p.classList.remove('has-obj','has-rend','sel-obj','sel-rend');
+    const sid = p.getAttribute('data-state');
+    if (selectedId) {
+      const obj = objects.find(o => o.id === selectedId);
+      if (sid === obj.objectState) p.classList.add('sel-obj');
+      else if (sid === obj.rendererState) p.classList.add('sel-rend');
+      else if (representedStates.has(sid)) p.classList.add('has-obj');
+    } else {
+      if (objStates.has(sid)) p.classList.add('has-obj');
+      else if (rendStates.has(sid)) p.classList.add('has-rend');
+    }
+  });
+}
+
+function selectObj(id) {
+  selectedId = id;
+  closeSuggest();
+  const obj = objects.find(o => o.id === id);
+  renderList();
+  updateMapColors();
+  drawConnection(obj);
+  showPanel(obj);
+}
+
+function drawConnection(obj) {
+  const cg = document.getElementById('conn-g');
+  const dg = document.getElementById('dots-g');
+  cg.innerHTML = ''; dg.innerHTML = '';
+  const oc = stateCentroids[obj.objectState];
+  const rc = stateCentroids[obj.rendererState];
+  if (!oc || !rc) return;
+  if (obj.objectState !== obj.rendererState) {
+    const cx = (oc.x+rc.x)/2;
+    const cy = Math.min(oc.y,rc.y)-55;
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d',`M${rc.x},${rc.y} Q${cx},${cy} ${oc.x},${oc.y}`);
+    path.setAttribute('class','conn');
+    path.setAttribute('marker-end','url(#arr)');
+    cg.appendChild(path);
+  }
+  [[oc,'#2a2420'],[rc,'#534AB7']].forEach(([c,col]) => {
+    const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circle.setAttribute('cx',c.x); circle.setAttribute('cy',c.y);
+    circle.setAttribute('r','7'); circle.setAttribute('fill',col);
+    circle.setAttribute('stroke','#fff'); circle.setAttribute('stroke-width','2');
+    dg.appendChild(circle);
+  });
+}
+
+function showPanel(obj) {
+  document.getElementById('panel-title').textContent = obj.name;
+  document.getElementById('panel-fields').innerHTML =
+    `<b>Artist / Renderer:</b> ${obj.artist} (${obj.rendererLocation})<br>` +
+    `<b>Date rendered:</b> ${obj.date}<br>` +
+    `<b>Object maker:</b> ${obj.maker}<br>` +
+    `<b>Owner:</b> ${obj.owner}<br>` +
+    `<b>Description:</b> ${obj.desc}`;
+  const connText = obj.objectState !== obj.rendererState
+    ? `Renderer traveled from ${obj.rendererState} → ${obj.objectState} to document this object`
+    : `Renderer was local to the object's origin`;
+  document.getElementById('panel-conn').textContent = connText;
+  const wrap = document.getElementById('panel-img-wrap');
+  if (obj.imageUrl) {
+    wrap.innerHTML = `<img src="${obj.imageUrl}" alt="${obj.name}" onerror="this.parentNode.innerHTML='<div id=panel-img-placeholder>No image available</div>'">`;
+  } else {
+    wrap.innerHTML = `<div id="panel-img-placeholder">No image available</div>`;
+  }
+  const link = document.getElementById('panel-link');
+  if (obj.linkUrl) {
+    link.href = obj.linkUrl;
+    link.style.display = 'inline-block';
+  } else {
+    link.style.display = 'none';
+  }
+  document.getElementById('panel').classList.add('show');
+}
+
+function closePanel() {
+  document.getElementById('panel').classList.remove('show');
+  document.getElementById('conn-g').innerHTML = '';
+  document.getElementById('dots-g').innerHTML = '';
+  selectedId = null;
+  updateMapColors();
+  renderList();
+}
+
+let suggestState = null;
+function openSuggest(stateAbbr) {
+  suggestState = stateAbbr;
+  closePanel();
+  document.getElementById('suggest-title').textContent = `Suggest an object for ${stateAbbr}`;
+  document.getElementById('suggest-input').value = '';
+  document.getElementById('suggest-thanks').style.display = 'none';
+  document.getElementById('suggest-btns').style.display = 'flex';
+  document.getElementById('suggest-panel').classList.add('show');
+}
+function closeSuggest() {
+  document.getElementById('suggest-panel').classList.remove('show');
+  suggestState = null;
+}
+function submitSuggest() {
+  const val = document.getElementById('suggest-input').value.trim();
+  if (!val) return;
+  document.getElementById('suggest-btns').style.display = 'none';
+  document.getElementById('suggest-thanks').style.display = 'block';
+  setTimeout(closeSuggest, 2200);
+}
+
+const fips = {
+  "01":"AL","02":"AK","04":"AZ","05":"AR","06":"CA","08":"CO","09":"CT",
+  "10":"DE","11":"DC","12":"FL","13":"GA","15":"HI","16":"ID","17":"IL",
+  "18":"IN","19":"IA","20":"KS","21":"KY","22":"LA","23":"ME","24":"MD",
+  "25":"MA","26":"MI","27":"MN","28":"MS","29":"MO","30":"MT","31":"NE",
+  "32":"NV","33":"NH","34":"NJ","35":"NM","36":"NY","37":"NC","38":"ND",
+  "39":"OH","40":"OK","41":"OR","42":"PA","44":"RI","45":"SC","46":"SD",
+  "47":"TN","48":"TX","49":"UT","50":"VT","51":"VA","53":"WA","54":"WV",
+  "55":"WI","56":"WY"
+};
+
+const stateNames = {
+  AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",
+  CO:"Colorado",CT:"Connecticut",DC:"Washington DC",DE:"Delaware",
+  FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",
+  IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",
+  ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",
+  MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",
+  NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",
+  NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",
+  OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",
+  SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",
+  VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming"
+};
+
+async function buildMap() {
+  const g = document.getElementById('states-g');
+  try {
+    const us = await fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json').then(r=>r.json());
+    const states = topojson.feature(us, us.objects.states);
+    const proj = d3.geoAlbersUsa().scale(1100).translate([480,300]);
+    const pathGen = d3.geoPath().projection(proj);
+    const label = document.getElementById('state-label');
+
+    states.features.forEach(f => {
+      const abbr = fips[f.id.toString().padStart(2,'0')];
+      if (!abbr) return;
+      const el = document.createElementNS('http://www.w3.org/2000/svg','path');
+      el.setAttribute('d', pathGen(f));
+      el.setAttribute('class','sp');
+      el.setAttribute('data-state', abbr);
+
+      el.addEventListener('mouseenter', () => {
+        label.textContent = stateNames[abbr] || abbr;
+        label.classList.add('show');
+      });
+      el.addEventListener('mouseleave', () => {
+        label.classList.remove('show');
+      });
+
+      el.addEventListener('click', () => {
+        const fo = filteredObjects();
+        const match = fo.find(o => o.objectState === abbr);
+        if (match) {
+          selectObj(match.id);
+        } else if (!representedStates.has(abbr)) {
+          closePanel();
+          openSuggest(stateNames[abbr] || abbr);
+        }
+      });
+
+      g.appendChild(el);
+      const c = proj(d3.geoCentroid(f));
+      if (c) stateCentroids[abbr] = {x:Math.round(c[0]), y:Math.round(c[1])};
+    });
+    updateMapColors();
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+buildMap();
+renderList();
+</script>
+</body>
+</html>
 
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
