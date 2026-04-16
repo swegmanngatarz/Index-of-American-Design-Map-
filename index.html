@@ -131,12 +131,12 @@ body{font-family:Georgia,serif;background:#f0f4f8;}
       <button onclick="closeSuggest()" style="position:absolute;top:10px;right:14px;background:none;border:none;font-size:20px;cursor:pointer;color:#7a8fa0;">x</button>
       <div id="suggest-title"></div>
       <div id="suggest-sub">This state was not represented in the original Index of American Design. What object do you think represents your state and should be included in a new index?</div>
-      <textarea id="suggest-input" placeholder="Ex: A Navajo tapestry from the 1880s, held by..."></textarea>
+      <textarea id="suggest-input" placeholder="Ex: A Navajo tapestry from the 1880s..."></textarea>
       <div id="suggest-btns">
         <button class="sbtn" id="submit-btn" onclick="submitSuggest()">Submit suggestion</button>
         <button class="sbtn" id="cancel-btn" onclick="closeSuggest()">Cancel</button>
       </div>
-      <div id="suggest-thanks">Thank you - your suggestion has been recorded!</div>
+      <div id="suggest-thanks">Thank you - your object suggestion has been recorded!</div>
     </div>
   </div>
 </div>
@@ -196,7 +196,7 @@ function renderList() {
       <div class="oname">${o.name}</div>
       <div class="osub">${o.origin} - ${o.date}</div>
       <span class="tag t-type">${o.type}</span>
-      <span class="tag t-rend">rendered in ${o.rendererState}</span>
+      <span class="tag t-rend">rendered for ${o.rendererState}</span>
     </div>`
   ).join('');
 }
