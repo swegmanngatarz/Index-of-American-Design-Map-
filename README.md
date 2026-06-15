@@ -1,1 +1,1 @@
-An interactive map where users can see objects that came from their state. also have rendered in the state filter 
+An interactive map where users can filter through the Index of American Design objects by state. 
